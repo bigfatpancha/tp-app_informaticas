@@ -1,0 +1,22 @@
+<ion-view title="partido" id="page9">
+  <ion-content padding="true" class="has-header">
+    <h1 id="partido-heading5" style="color:#000000;">Donde</h1>
+    <div id="partido-markdown14" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">
+        {{partido.donde.direccion}}
+      </p>
+    </div>
+    <h1 id="partido-heading6" style="color:#000000;">Cuando</h1>
+    <div id="partido-markdown15" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">
+        {{partido.cuando.dia}}/{{partido.cuando.mes}}/{{partido.cuando.anio}}
+        {{partido.cuando.hora}}:{{partido.cuando.minutos}}
+      </p>
+    </div>
+    <h1 id="partido-heading7" style="color:#000000;">Quienes</h1>
+    <ion-list id="partido-list10" ng-repeat="amigo in partido.quienes">
+      <ion-item id="partido-list-item43">{{amigo.nombre}} - Handicup: {{amigo.handicup}}</ion-item>
+    </ion-list>
+    <button ng-click="buscarJugadorDeEmergencia(partido.id)" id="partido-button8" class="button button-positive button-block">Buscar jugador de emergencia</button>
+  </ion-content>
+</ion-view>

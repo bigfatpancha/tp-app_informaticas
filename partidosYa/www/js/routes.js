@@ -87,6 +87,26 @@ angular.module('app.routes', [])
     }
   })
 
+  .state('menu.detallePartido', {
+    url: '/detallePartido',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/partido.html',
+        controller: 'partidoCtrl'
+      }
+    }
+  })
+
+  .state('menu.elegirJugadores', {
+    url: '/elegirJugadores',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/elegiATusJugadores.html',
+        controller: 'elegiATusJugadoresCtrl'
+      }
+    }
+  })
+
 $urlRouterProvider.otherwise('/side-menu21/page1')
 
 
