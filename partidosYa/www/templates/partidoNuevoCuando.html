@@ -4,5 +4,10 @@
     <div id="partidoNuevoCuando-markdown10" class="show-list-numbers-and-dots">
       <p style="color:#000000;">Elegí un día y un horario disponible</p>
     </div>
+    <ion-list id="partidoNuevoCuando-list9" ng-repeat="horario in horarios" ng-show="horarios.length > 0">
+      <ion-item class="item-avatar" id="partidoNuevoCuando-list-item38" ng-click="goToPaso3(horario.id)">
+        <h2>{{horario.dia}} de {{formatMes(horario.mes)}} de {{horario.anio}} a las {{horario.hora}}:{{horario.minutos}}</h2>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

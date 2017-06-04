@@ -9,7 +9,7 @@ angular.module('app.routes', [])
   $stateProvider
     
 
-      .state('menu.home', {
+  .state('menu.home', {
     url: '/page1',
     views: {
       'side-menu21': {
@@ -57,22 +57,34 @@ angular.module('app.routes', [])
     controller: 'signupCtrl'
   })
 
-  .state('partidoNuevoDonde', {
-    url: '/page6',
-    templateUrl: 'templates/partidoNuevoDonde.html',
-    controller: 'partidoNuevoDondeCtrl'
+  .state('menu.partidoNuevoDonde', {
+    url: '/crearPartido/donde',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/partidoNuevoDonde.html',
+        controller: 'partidoNuevoDondeCtrl'
+      }
+    }
   })
 
-  .state('partidoNuevoCuando', {
-    url: '/page7',
-    templateUrl: 'templates/partidoNuevoCuando.html',
-    controller: 'partidoNuevoCuandoCtrl'
+  .state('menu.partidoNuevoCuando', {
+    url: '/crearPartido/cuando',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/partidoNuevoCuando.html',
+        controller: 'partidoNuevoCuandoCtrl'
+      }
+    }
   })
 
-  .state('partidoNuevoInvitarAmigos', {
-    url: '/page8',
-    templateUrl: 'templates/partidoNuevoInvitarAmigos.html',
-    controller: 'partidoNuevoInvitarAmigosCtrl'
+  .state('menu.partidoNuevoInvitarAmigos', {
+    url: '/crearPartido/amigos',
+    views: {
+      'side-menu21': {
+        templateUrl: 'templates/partidoNuevoInvitarAmigos.html',
+        controller: 'partidoNuevoInvitarAmigosCtrl'
+      }
+    }
   })
 
 $urlRouterProvider.otherwise('/side-menu21/page1')
