@@ -75,7 +75,7 @@ angular.module('app.routes', [])
     controller: 'partidoNuevoInvitarAmigosCtrl'
   })
 
-$urlRouterProvider.otherwise('/side-menu21/page2')
+$urlRouterProvider.otherwise('/side-menu21/page1')
 
 
 });

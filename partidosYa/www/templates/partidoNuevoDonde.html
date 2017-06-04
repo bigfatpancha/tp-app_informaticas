@@ -7,33 +7,31 @@
     <form id="partidoNuevoDonde-form7" class="list">
       <label class="item item-input" id="partidoNuevoDonde-search1">
         <i class="icon ion-search placeholder-icon"></i>
-        <input type="search" placeholder="Ingresá una dirección">
+        <input ng-class="{'activo_desplegable': direccion.active}"
+              ng-focus="direccion.active = true" ng-blur="direccion.active = false" autocomplete="off" id="dondeDireccion" type="search" placeholder="Ingresá una dirección" ng-model="donde.direccion">
       </label>
       <label class="item item-select" id="partidoNuevoDonde-select1">
         <span class="input-label">Tamaño</span>
-        <select>
-          <option>5</option>
-          <option>7</option>
-          <option>11</option>
+        <select ng-model="donde.tamanio">
+          <option value="1">5</option>
+          <option value="2">7</option>
+          <option value="3">11</option>
         </select>
       </label>
-      <ion-toggle toggle-class="toggle-positive" id="partidoNuevoDonde-toggle1">Techada</ion-toggle>
+      <ion-toggle ng-model="donde.techada" toggle-class="toggle-positive" id="partidoNuevoDonde-toggle1">Techada</ion-toggle>
       <label class="item item-select" id="partidoNuevoDonde-select3">
         <span class="input-label">Tipo de piso</span>
-        <select>
-          <option>cesped</option>
-          <option>cesped sintetico</option>
-          <option>cemento</option>
+        <select ng-model="donde.piso">
+          <option value="1">cesped</option>
+          <option value="2">cesped sintetico</option>
+          <option value="3">cemento</option>
         </select>
       </label>
     </form>
-    <button id="partidoNuevoDonde-button15" class="button button-positive button-block icon ion-search"> Buscar</button>
-    <ion-list id="partidoNuevoDonde-list9">
-      <ion-item class="item-avatar" id="partidoNuevoDonde-list-item38">
-        <h2>Cancha 1</h2>
-      </ion-item>
-      <ion-item class="item-avatar" id="partidoNuevoDonde-list-item37">
-        <h2>Cancha 2</h2>
+    <button ng-click="buscar()" id="partidoNuevoDonde-button15" class="button button-positive button-block icon ion-search"> Buscar</button>
+    <ion-list id="partidoNuevoDonde-list9" ng-repeat="cancha in canchas" ng-show="canchas.length > 0">
+      <ion-item class="item-avatar" id="partidoNuevoDonde-list-item38" ng-click="goToPaso2(cancha.id)">
+        <h2>{{cancha.nombre}} - {{cancha.direccion}}</h2>
       </ion-item>
     </ion-list>
   </ion-content>
