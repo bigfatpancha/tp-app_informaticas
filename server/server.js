@@ -19,7 +19,7 @@ function handleRequests(request,response) {
 	  	var pathname = q.pathname;
 	  	console.log(pathname)
 	  	var controller = controllers.getController(pathname);
-	  	response.write(q.pathname);
+	  	controller.getResponse();
 	  	response.end();
 	} catch(ex) {
 		console.log("Uh " + ex);
