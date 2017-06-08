@@ -1,7 +1,7 @@
 var http = require("http");
 var server = http.createServer(handleRequests);
 var port = 11111;
-var dbconnect = require("./atpJs/dbconnect.js");
+var dbconnect = require("./db/dbconnect.js");
 var serverFunctions = require("./serverFunctions/serverFunctions.js");
 var queryString = require("querystring");
 
