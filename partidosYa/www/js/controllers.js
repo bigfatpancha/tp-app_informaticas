@@ -336,4 +336,44 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 	}
 
 }])
+
+.factory('ajaxFunctions', [ '$http', 'ajaxFunctions', '$rootScope', function($http, ajaxFunctions, $rootScope) {            
+        
+    return {
+
+            homeData: '',
+
+            busqueda: '',
+
+            detalle: '',
+
+            cargarHome: function(data) {
+                console.log('va a realizar el pedido de inicializacion')
+                if(!this.homeData) {
+                    this.homeData = ajaxFunctions.realizarPedidoAjax(
+                        { method:'post', data: data, url: $rootScope.url + 'inicializacion' }
+                    );
+                }
+                return this.homeData;
+            },
+
+            getBeneficios: function(data) {
+                console.log('va a realizar el pedido de busquda')
+                this.busqueda = ajaxFunctions.realizarPedidoAjax(
+                    { method:'post', data: data, url: $rootScope.url + 'busqueda' }
+                );
+                return this.busqueda;
+            },
+
+            getDetalleBeneficio: function(id, data) {
+                console.log('va a realizar el pedido del detalle')
+                this.detalle = ajaxFunctions.realizarPedidoAjax(
+                    { method: 'post', data: data, url: $rootScope.url + id }
+                );
+                return this.detalle;
+            }
+
+        };
+
+    }])
  
