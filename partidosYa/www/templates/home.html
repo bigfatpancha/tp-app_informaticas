@@ -2,12 +2,12 @@
   <ion-content padding="true" class="has-header">
     <div class="list card" id="home-card24">
       <ion-item class="item-avatar" id="home-list-item23">
-        <h2>Lucia Julia</h2>
-        <p>Devoto</p>
+        <h2>{{homeData.user.nombre}} {{homeData.user.apellido}}</h2>
+        <p>{{homeData.user.zona}}</p>
       </ion-item>
       <form id="home-form5" class="list">
-        <ion-item class="range range-positive" id="home-range3">Handicup
-          <input type="range" value="25" min="0" max="100" step="1">
+        <ion-item class="range range-positive" id="home-range3">Handicup: {{homeData.user.handicup}}
+          <input type="range" ng-model="homeData.user.handicup" min="0" max="100" step="1" disabled>
         </ion-item>
       </form>
     </div>

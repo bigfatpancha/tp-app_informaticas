@@ -1,9 +1,23 @@
-angular.module('app.controllers', [])
+angular.module('app.controllers', ['ajaxApp'])
   
-.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ajax', '$rootScope',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, DetallePartidoService) {
+function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope) {
+	$scope.homeData = {}
+	$rootScope.init = function() {
+		ajax
+            .cargarHome()
+            .then(function(resp) {
+            	parse(resp);
+            })
+	}
+
+	function parse(resp) {
+		console.log(resp)
+		$scope.homeData.user = resp.user;
+	}
+
 	$scope.goTo = function(pantalla) {
 		$state.go(pantalla);
 	}
@@ -337,7 +351,7 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
 }])
 
-.factory('ajaxFunctions', [ '$http', 'ajaxFunctions', '$rootScope', function($http, ajaxFunctions, $rootScope) {            
+.factory('ajax', [ '$http', 'ajaxFunctions', '$rootScope', function($http, ajaxFunctions, $rootScope) {            
         
     return {
 
@@ -347,11 +361,11 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
             detalle: '',
 
-            cargarHome: function(data) {
+            cargarHome: function() {
                 console.log('va a realizar el pedido de inicializacion')
                 if(!this.homeData) {
                     this.homeData = ajaxFunctions.realizarPedidoAjax(
-                        { method:'post', data: data, url: $rootScope.url + 'inicializacion' }
+                        { method:'post', url: $rootScope.host + 'inicializacion' }
                     );
                 }
                 return this.homeData;
@@ -376,4 +390,4 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
         };
 
     }])
- 
+ ;

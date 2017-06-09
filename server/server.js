@@ -13,14 +13,19 @@ function handleRequests(request,response) {
 		response.setHeader("Content-Type","application/json");
 		response.end(JSON.stringify(result));
 	  });*/
-	  	response.writeHead(200, {'Content-Type': 'text/html'});
+	  	//response.writeHead(200, {'Content-Type': 'text/html'});
+	  	response.setHeader("Content-Type","application/json");
+	  	response.setHeader("Access-Control-Allow-Origin","*")
+	  	response.setHeader("Access-Control-Allow-Methods","*")
+	  	response.setHeader("Access-Control-Allow-Headers","Content-Type")
 	  	var adr = request.url;
 	  	var q = url.parse(adr, true);
 	  	var pathname = q.pathname;
-	  	console.log(pathname)
+	  	console.log('path: ' + pathname)
 	  	var controller = controllers.getController(pathname);
-	  	controller.getResponse();
-	  	response.end();
+	  	var resp = controller.getResponse()
+	  	console.log('respuesta: ' + resp)
+	  	response.end(JSON.stringify(resp));
 	} catch(ex) {
 		console.log("Uh " + ex);
 		response.statusCode = 500;

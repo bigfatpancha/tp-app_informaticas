@@ -13,7 +13,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
 })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $rootScope) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -26,8 +26,9 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       StatusBar.styleDefault();
     }
 
-    $rootScope.host = "localhost:11111/partidosYa/";
-
+    $rootScope.host = "http://localhost:11111/partidosYa/";
+    console.log($rootScope.host)
+    $rootScope.init();
   });
 })
 
