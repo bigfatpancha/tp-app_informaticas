@@ -16,6 +16,24 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	function parse(resp) {
 		console.log(resp)
 		$scope.homeData.user = resp.user;
+		$scope.homeData.partidos = resp.partidos
+	}
+
+	$scope.formatMes = function(mes) {
+		switch(mes) {
+			case "1": return "enero" 
+			case "2": return "febrero"
+			case "3": return "marzo"
+			case "4": return "abril"
+			case "5": return "mayo"
+			case "6": return "junio"
+			case "7": return "julio"
+			case "8": return "agosto"
+			case "9": return "septiembre"
+			case "10": return "octubre"
+			case "11": return "noviembre"
+			case "12": return "diciembre"
+		}
 	}
 
 	$scope.goTo = function(pantalla) {
@@ -23,8 +41,17 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	}
 
 	$scope.detallePartido = function(id) {
-		DetallePartidoService.parsePartido("asd")
-		$state.go('menu.detallePartido')
+		ajax
+            .detallePartido(id)
+            .then(function(resp) {
+            	DetallePartidoService.parsePartido(resp)
+				$state
+					.go('menu.detallePartido')	
+					.then(function() {
+                        $rootScope.initDetallePartido();
+                    })
+            })
+		
 	}
 
 }])
@@ -33,38 +60,7 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	this.partido = {}
 
 	this.parsePartido = function(resp) {
-		this.partido = {}
-		this.partido.id = 1
-		this.partido.donde = {
-			"direccion": "Gaona 1231"
-		}
-		this.partido.cuando = {
-			"dia": "10",
-			"mes": "06",
-			"anio": "2017",
-			"hora": "18",
-			"minutos": "00"
-		}
-		this.partido.quienes = [
-		{
-				"id": 1,
-				"nombre": "Lucia",
-				"apellido": "Julia",
-				"handicup": 25
-			},
-			{
-				"id": 2,
-				"nombre": "Ayelen",
-				"apellido": "Bossero",
-				"handicup": 26
-			},
-			{
-				"id": 3,
-				"nombre": "Nahuel",
-				"apellido": "Sosa",
-				"handicup": 40
-			}
-		]
+		this.partido = resp.partido
 	}
 })
    
@@ -84,11 +80,17 @@ function ($scope, $stateParams) {
 
 }])
    
-.controller('menuCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('menuCtrl', ['$scope', '$stateParams', '$state', '$rootScope', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
+function ($scope, $stateParams, $state, $rootScope) {
+	$scope.goTo = function(pantalla) {
+		$state
+            .go(pantalla)
+            .then(function(){
+                $rootScope.init()
+            });
+	}
 
 }])
    
@@ -279,11 +281,13 @@ function ($scope, $stateParams, $state, InvitarAmigosService, $ionicPopup) {
 
 }])
 
-.controller('partidoCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ElegirJugadoresEmergenciaService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('partidoCtrl', ['$scope', '$rootScope', '$stateParams', '$state', 'DetallePartidoService', 'ElegirJugadoresEmergenciaService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, DetallePartidoService, ElegirJugadoresEmergenciaService) {
-	$scope.partido = DetallePartidoService.partido
+function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, ElegirJugadoresEmergenciaService) {
+	$rootScope.initDetallePartido = function() {
+		$scope.partido = DetallePartidoService.partido
+	}
 
 	$scope.buscarJugadorDeEmergencia = function(id) {
 		//TODO buscar jugadores para un partido determinado
@@ -357,7 +361,7 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
             homeData: '',
 
-            busqueda: '',
+            detallePartido: '',
 
             detalle: '',
 
@@ -365,18 +369,18 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
                 console.log('va a realizar el pedido de inicializacion')
                 if(!this.homeData) {
                     this.homeData = ajaxFunctions.realizarPedidoAjax(
-                        { method:'post', url: $rootScope.host + 'inicializacion' }
+                        { method:'POST', data: {"id": 1}, url: $rootScope.host + 'inicializacion' }
                     );
                 }
                 return this.homeData;
             },
 
-            getBeneficios: function(data) {
-                console.log('va a realizar el pedido de busquda')
-                this.busqueda = ajaxFunctions.realizarPedidoAjax(
-                    { method:'post', data: data, url: $rootScope.url + 'busqueda' }
+            detallePartido: function(id) {
+                console.log('va a realizar el pedido de detalle de busqueda')
+                this.detallePartido = ajaxFunctions.realizarPedidoAjax(
+                    { method:'post', data: {"id": id}, url: $rootScope.host + 'detallePartido' }
                 );
-                return this.busqueda;
+                return this.detallePartido;
             },
 
             getDetalleBeneficio: function(id, data) {

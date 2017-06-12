@@ -11,15 +11,10 @@
         </ion-item>
       </form>
     </div>
-    <ion-list id="home-list2">
-      <ion-item ng-click="detallePartido(1)" id="home-list-item11">Oeste Futbol - Lun 29 de Mayo 19hs
-        <span class="item-note">faltan 3 jugadores</span>
-      </ion-item>
-      <ion-item id="home-list-item14">Oeste futbol - Lun 29 de Mayo 19hs
-        <span class="item-note">faltan 2 jugadores</span>
-      </ion-item>
-      <ion-item id="home-list-item12">Oeste futbol - Lun 29 de Mayo 19hs
-        <span class="item-note">partido completo</span>
+    <ion-list id="home-list2" ng-repeat="partido in homeData.partidos">
+      <ion-item ng-click="detallePartido({{partido.id}})" id="home-list-item11">{{partido.cancha_nombre}} - {{partido.dia_semana}} {{partido.dia_mes}} de {{formatMes(partido.mes)}} {{partido.hora}}:{{partido.minutos}} hs. 
+        <span class="item-note" ng-show="partido.jugadores_totales > partido.jugadores_actuales">faltan {{partido.jugadores_totales - partido.jugadores_actuales}} jugadores</span>
+        <span class="item-note" ng-show="partido.jugadores_totales == partido.jugadores_actuales">Partido Completo</span>
       </ion-item>
     </ion-list>
     <div id="home-button-bar1" class="button-bar">
