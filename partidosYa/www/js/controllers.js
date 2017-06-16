@@ -290,9 +290,13 @@ function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, Elegi
 	}
 
 	$scope.buscarJugadorDeEmergencia = function(id) {
-		//TODO buscar jugadores para un partido determinado
-		ElegirJugadoresEmergenciaService.parseJugadores("asd")
-		$state.go('menu.elegirJugadores')
+		ajax
+			.buscarJugadorDeEmergencia(id)
+			.then(function(resp) {
+				ElegirJugadoresEmergenciaService.parseJugadores("asd")
+				$state.go('menu.elegirJugadores')
+				
+			})
 	}
 
 }])
