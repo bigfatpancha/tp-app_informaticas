@@ -76,6 +76,7 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope,
             .then(function(resp) {
             	console.log(resp)
             	DetallePartidoService.parsePartido(resp)
+            	DetallePartidoService.setIdPartido(id)
 				$state
 					.go('menu.detallePartido')	
 					.then(function() {
@@ -98,6 +99,10 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope,
 			"quienes": resp.quienes,
 			"handicup": handicup_prom
 		}
+	}
+
+	this.setIdPartido = function(id) {
+		this.partido.id = id;
 	}
 
 	function calcularProm(jugadores) {
@@ -391,10 +396,10 @@ function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, Elegi
 })
 
 .controller('elegiATusJugadoresCtrl', ['$scope', '$stateParams', '$state', '$ionicPopup', 
-'ElegirJugadoresEmergenciaService', '$ionicLoading', 'ajax', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+'ElegirJugadoresEmergenciaService', '$ionicLoading', 'ajax', 'DetallePartidoService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaService, $ionicLoading, ajax) {
+function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaService, $ionicLoading, ajax, DetallePartidoService) {
 	$scope.jugadores = ElegirJugadoresEmergenciaService.jugadores
 	$scope.selected = [];
 	$scope.selectJugador = function(id, $event) {
@@ -406,11 +411,16 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
         console.log($scope.selected)
 	}
 
+	$scope.data = {
+		"selected": $scope.selected,
+		"id_partido": DetallePartidoService.partido.id
+	}
+
 	$scope.mandarInvitaciones = function() {
 	 	$ionicLoading.show()
 
 		ajax
-			.mandarInvitaciones($scope.selected)
+			.mandarInvitaciones($scope.data)
 			.then(function(resp) {
 				$ionicLoading.hide()
 				$ionicPopup.alert({
@@ -455,10 +465,10 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
             detallePartido: function(id) {
                 console.log('va a realizar el pedido de detalle de busqueda')
-                this.detallePartido = ajaxFunctions.realizarPedidoAjax(
+                var detallePartido = ajaxFunctions.realizarPedidoAjax(
                     { method:'post', data: {"id": id}, url: $rootScope.host + 'detallePartido' }
                 );
-                return this.detallePartido;
+                return detallePartido;
             },
 
             buscarJugadorDeEmergencia: function(handicup) {

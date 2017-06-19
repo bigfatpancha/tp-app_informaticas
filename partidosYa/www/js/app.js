@@ -28,7 +28,7 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       StatusBar.styleDefault();
     }
 
-    $rootScope.host = "http://localhost:11111/partidosYa/";
+    $rootScope.host = "http://bigfatpancha2:11111/partidosYa/";
     console.log($rootScope.host)
     $rootScope.init();
   });
