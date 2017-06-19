@@ -1,9 +1,9 @@
 angular.module('app.controllers', ['ionic','ngCordova','ajaxApp'])
   
-.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ajax', '$rootScope',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ajax', '$rootScope', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope) {
+function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope, $ionicPopup) {
 	$scope.homeData = {}
 	$rootScope.init = function() {
 		ajax
@@ -14,9 +14,34 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	}
 
 	function parse(resp) {
-		console.log(resp)
-		$scope.homeData.user = resp.user;
-		$scope.homeData.partidos = resp.partidos
+		if(resp.respuesta == "OK") {
+			console.log(resp)
+			$scope.homeData.user = resp.user;
+			$scope.homeData.partidos = resp.partidos	
+		} else if(resp.respuesta == "SIN PARTIDOS") {
+			$scope.homeData.user = resp.user;
+			$scope.homeData.partidos = resp.partidos	
+			$ionicPopup.alert({
+				title: 'No tenés partidos pendientes',
+				buttons: [
+					{
+						text: 'Ok',
+						type: 'button-positive'
+					}
+				]
+			})
+		} else {
+			$ionicPopup.alert({
+				title: 'El usuario no existe',
+				buttons: [
+					{
+						text: 'Ok',
+						type: 'button-positive'
+					}
+				]
+			})
+		}
+		
 	}
 	var meses = {
 		"01": "ene",

@@ -22,6 +22,7 @@ var select_jugador_by_id_sql = 	"select j.id_jugador, j.nombre, j.apellido, j.ha
 								"inner join horarios h on h.id_horario = p.id_horario "+
 								"inner join canchas c on c.id_cancha = p.id_cancha "+
 								"where j.id_jugador = ?"
+var select_solo_jugador_by_id_sql = 	"select * from jugadores j where j.id_jugador = ?"
 var select_cantidad_jugadores_by_id_partido_sql = 	"select pj.id_partido, count(*) cantidad from partido_jugador pj "+
 												"where pj.id_partido = ? "+
 												"group by pj.id_partido"
@@ -52,24 +53,29 @@ function execute_statement(statement,data,callback) {
 }
 
 function select_partido_by_id(data, callback) {
-	execute_statement(select_partido_by_id_sql,data,callback);
+	execute_statement(select_partido_by_id_sql, data, callback);
 }
 
 function select_jugador_by_id(data, callback) {
-	execute_statement(select_jugador_by_id_sql,data,callback);
+	execute_statement(select_jugador_by_id_sql, data, callback);
 }
 
 function select_cantidad_jugadores_by_id_partido(data, callback) {
-	execute_statement(select_cantidad_jugadores_by_id_partido_sql,data,callback);
+	execute_statement(select_cantidad_jugadores_by_id_partido_sql, data, callback);
 }
 
 function select_jugadores_by_handicup(data, callback) {
-	execute_statement(select_jugadores_by_handicup_sql,data,callback)
+	execute_statement(select_jugadores_by_handicup_sql, data, callback)
+}
+
+function select_solo_jugador_by_id(data, callback) {
+	execute_statement(select_solo_jugador_by_id_sql, data, callback)
 }
 
 module.exports = {
 	select_partido_by_id:select_partido_by_id,
 	select_jugador_by_id:select_jugador_by_id,
 	select_cantidad_jugadores_by_id_partido:select_cantidad_jugadores_by_id_partido,
-	select_jugadores_by_handicup:select_jugadores_by_handicup
+	select_jugadores_by_handicup:select_jugadores_by_handicup,
+	select_solo_jugador_by_id:select_solo_jugador_by_id
 };
