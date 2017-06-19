@@ -18,22 +18,26 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 		$scope.homeData.user = resp.user;
 		$scope.homeData.partidos = resp.partidos
 	}
+	var meses = {
+		"01": "ene",
+		"02": "feb",
+		"03": "mar",
+		"04": "abr",
+		"05": "may",
+		"06": "jun",
+		"07": "jul",
+		"08": "ago",
+		"09": "sep",
+		"10": "oct",
+		"11": "nov",
+		"12": "dec"
+	}
+	$scope.formatFecha = function(fecha) {
+		return fecha.substring(8,10) + " de " + meses[fecha.substring(5,7)] + " de " + fecha.substring(0,4)
+	}
 
-	$scope.formatMes = function(mes) {
-		switch(mes) {
-			case "1": return "enero" 
-			case "2": return "febrero"
-			case "3": return "marzo"
-			case "4": return "abril"
-			case "5": return "mayo"
-			case "6": return "junio"
-			case "7": return "julio"
-			case "8": return "agosto"
-			case "9": return "septiembre"
-			case "10": return "octubre"
-			case "11": return "noviembre"
-			case "12": return "diciembre"
-		}
+	$scope.formatHora = function(hora) {
+		return hora.substring(0,5)
 	}
 
 	$scope.goTo = function(pantalla) {
@@ -41,9 +45,11 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	}
 
 	$scope.detallePartido = function(id) {
+		console.log("id partido: " + id);
 		ajax
             .detallePartido(id)
             .then(function(resp) {
+            	console.log(resp)
             	DetallePartidoService.parsePartido(resp)
 				$state
 					.go('menu.detallePartido')	
@@ -60,7 +66,21 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope)
 	this.partido = {}
 
 	this.parsePartido = function(resp) {
-		this.partido = resp.partido
+		var handicup_prom = calcularProm(resp.quienes)
+		this.partido = {
+			"donde": resp.donde,
+			"cuando": resp.cuando,
+			"quienes": resp.quienes,
+			"handicup": handicup_prom
+		}
+	}
+
+	function calcularProm(jugadores) {
+		var sum = 0;
+		for(var i = 0; i < jugadores.length; i++) {
+			sum += jugadores[i].handicup
+		}
+		return sum / jugadores.length
 	}
 })
    
@@ -281,19 +301,54 @@ function ($scope, $stateParams, $state, InvitarAmigosService, $ionicPopup) {
 
 }])
 
-.controller('partidoCtrl', ['$scope', '$rootScope', '$stateParams', '$state', 'DetallePartidoService', 'ElegirJugadoresEmergenciaService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('partidoCtrl', ['$scope', '$rootScope', '$stateParams', '$state', 'DetallePartidoService',
+'ElegirJugadoresEmergenciaService', 'ajax', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, ElegirJugadoresEmergenciaService) {
+function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, ElegirJugadoresEmergenciaService,
+ ajax, $ionicLoading) {
 	$rootScope.initDetallePartido = function() {
+		console.log(DetallePartidoService.partido)
 		$scope.partido = DetallePartidoService.partido
 	}
 
-	$scope.buscarJugadorDeEmergencia = function(id) {
+	var meses = {
+		"01": "ene",
+		"02": "feb",
+		"03": "mar",
+		"04": "abr",
+		"05": "may",
+		"06": "jun",
+		"07": "jul",
+		"08": "ago",
+		"09": "sep",
+		"10": "oct",
+		"11": "nov",
+		"12": "dec"
+	}
+	$scope.formatFecha = function(fecha) {
+		return fecha.substring(8,10) + " de " + meses[fecha.substring(5,7)] + " de " + fecha.substring(0,4)
+	}
+
+	$scope.formatHora = function(hora) {
+		return hora.substring(0,5)
+	}
+
+	var tamanios = {"1": 10, "2": 14, "3": 22}
+	$scope.formatTamanio = function(tamanio) {
+		return tamanios[tamanio]
+	}
+
+	$scope.buscarJugadorDeEmergencia = function(handicup) {
+		var menor = handicup - 5
+		var mayor = handicup + 5
+		var content = 'Buscando jugadores con handicup entre ' + menor + ' y ' + mayor
+		$ionicLoading.show()
 		ajax
-			.buscarJugadorDeEmergencia(id)
+			.buscarJugadorDeEmergencia(handicup)
 			.then(function(resp) {
-				ElegirJugadoresEmergenciaService.parseJugadores("asd")
+				$ionicLoading.hide()
+				ElegirJugadoresEmergenciaService.parseJugadores(resp)
 				$state.go('menu.elegirJugadores')
 				
 			})
@@ -305,56 +360,48 @@ function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, Elegi
 	this.jugadores = []
 
 	this.parseJugadores = function(resp) {
-		this.jugadores = [
-			{
-				"id": 1,
-				"nombre": "Belen",
-				"apellido": "Spinelli",
-				"handicup": 20
-			},
-			{
-				"id": 2,
-				"nombre": "Julieta",
-				"apellido": "Luduenia",
-				"handicup": 15
-			},
-			{
-				"id": 3,
-				"nombre": "Martin",
-				"apellido": "Moreira",
-				"handicup": 40
-			},
-			{
-				"id": 4,
-				"nombre": "Hernan",
-				"apellido": "Williams",
-				"handicup": 35
-			}
-		]
+		console.log(resp)
+		this.jugadores = resp
 	}
 })
 
-.controller('elegiATusJugadoresCtrl', ['$scope', '$stateParams', '$state', '$ionicPopup', 'ElegirJugadoresEmergenciaService', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('elegiATusJugadoresCtrl', ['$scope', '$stateParams', '$state', '$ionicPopup', 
+'ElegirJugadoresEmergenciaService', '$ionicLoading', 'ajax', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaService) {
+function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaService, $ionicLoading, ajax) {
 	$scope.jugadores = ElegirJugadoresEmergenciaService.jugadores
+	$scope.selected = [];
+	$scope.selectJugador = function(id, $event) {
+		var checkbox = $event.target;
+        var action = (checkbox.checked ? 'add' : 'remove');
+        if (action == 'add' & $scope.selected.indexOf(id) == -1) $scope.selected.push(id);
+        if (action == 'remove' && $scope.selected.indexOf(id) != -1) $scope.selected.splice($scope.selected.indexOf(id), 1);
 
-	 $scope.mandarInvitaciones = function() {
+        console.log($scope.selected)
+	}
 
-		//TODO mandar invitaciones
-		$ionicPopup.alert({
-			title: 'Invitaciones enviadas correctamente',
-			buttons: [
-				{
-					text: 'volver al home',
-					type: 'button-positive',
-					onTap: function(e) {
-						$state.go('menu.home')
-					}
-				}
-			]
-		})
+	$scope.mandarInvitaciones = function() {
+	 	$ionicLoading.show()
+
+		ajax
+			.mandarInvitaciones($scope.selected)
+			.then(function(resp) {
+				$ionicLoading.hide()
+				$ionicPopup.alert({
+					title: 'Invitaciones enviadas correctamente',
+					buttons: [
+						{
+							text: 'volver al home',
+							type: 'button-positive',
+							onTap: function(e) {
+								$state.go('menu.home')
+							}
+						}
+					]
+				})
+			})
+		
 	}
 
 }])
@@ -367,7 +414,9 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
             detallePartido: '',
 
-            detalle: '',
+            jugadoresDeEmergencia: '',
+
+            mandarInvitaciones: '',
 
             cargarHome: function() {
                 console.log('va a realizar el pedido de inicializacion')
@@ -387,12 +436,20 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
                 return this.detallePartido;
             },
 
-            getDetalleBeneficio: function(id, data) {
+            buscarJugadorDeEmergencia: function(handicup) {
                 console.log('va a realizar el pedido del detalle')
-                this.detalle = ajaxFunctions.realizarPedidoAjax(
-                    { method: 'post', data: data, url: $rootScope.url + id }
+                this.jugadoresDeEmergencia = ajaxFunctions.realizarPedidoAjax(
+                    { method:'post', data: {"handicup": handicup}, url: $rootScope.host + 'buscarJugadorDeEmergencia' }
                 );
-                return this.detalle;
+                return this.jugadoresDeEmergencia;
+            },
+
+            mandarInvitaciones: function(data) {
+                console.log('va a realizar el pedido del detalle')
+                this.mandarInvitaciones = ajaxFunctions.realizarPedidoAjax(
+                    { method:'post', data: data, url: $rootScope.host + 'mandarInvitaciones' }
+                );
+                return this.mandarInvitaciones;
             }
 
         };

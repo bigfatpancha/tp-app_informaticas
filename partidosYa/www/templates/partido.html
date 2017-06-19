@@ -3,20 +3,29 @@
     <h1 id="partido-heading5" style="color:#000000;">Donde</h1>
     <div id="partido-markdown14" class="show-list-numbers-and-dots">
       <p style="color:#000000;">
-        {{partido.donde.direccion}}
+        {{partido.donde.nombre}}<br>
+        {{partido.donde.direccion}}<br>
+        Cantidad de jugadores totales: {{formatTamanio(partido.donde.tamanio)}}
       </p>
     </div>
     <h1 id="partido-heading6" style="color:#000000;">Cuando</h1>
     <div id="partido-markdown15" class="show-list-numbers-and-dots">
       <p style="color:#000000;">
-        {{partido.cuando.dia}}/{{partido.cuando.mes}}/{{partido.cuando.anio}}
-        {{partido.cuando.hora}}:{{partido.cuando.minutos}}
+        {{formatFecha(partido.cuando.fecha)}} a las {{formatHora(partido.cuando.hora)}}
       </p>
     </div>
     <h1 id="partido-heading7" style="color:#000000;">Quienes</h1>
+    <div class="show-list-numbers-and-dots">
+      <span class="item-note" ng-show="formatTamanio(partido.donde.tamanio) > partido.quienes.length">faltan {{formatTamanio(partido.donde.tamanio) - partido.quienes.length}} jugadores</span>
+        <span class="item-note" ng-show="formatTamanio(partido.donde.tamanio) == partido.quienes.length">Partido Completo</span>
+      <p style="color:#000000;">
+        Cantidad de confirmados: {{partido.quienes.length}}<br>
+        Promedio handicup del partido: {{partido.handicup}}
+      </p>
+    </div>
     <ion-list id="partido-list10" ng-repeat="amigo in partido.quienes">
       <ion-item id="partido-list-item43">{{amigo.nombre}} - Handicup: {{amigo.handicup}}</ion-item>
     </ion-list>
-    <button ng-click="buscarJugadorDeEmergencia(partido.id)" id="partido-button8" class="button button-positive button-block">Buscar jugador de emergencia</button>
+    <button ng-click="buscarJugadorDeEmergencia(partido.handicup)" id="partido-button8" class="button button-positive button-block">Buscar jugador de emergencia</button>
   </ion-content>
 </ion-view>

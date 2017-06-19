@@ -1,7 +1,7 @@
 <ion-view title="Elegi a tus jugadores" id="page10">
   <ion-content padding="true" class="has-header">
     <ion-list id="elegiATusJugadores-list11" ng-repeat="jugador in jugadores">
-      <ion-checkbox ng-model="jugadoresElegidos">{{jugador.nombre}} {{jugador.apellido}} - handicup: {{jugador.handicup}}</ion-checkbox>
+      <ion-checkbox ng-click="selectJugador(jugador.id, $event)">{{jugador.nombre}} {{jugador.apellido}} - handicup: {{jugador.handicup}}</ion-checkbox>
     </ion-list>
     <button ng-click="mandarInvitaciones()" id="elegiATusJugadores-button9" class="button button-positive button-block">Enviar invitación</button>
   </ion-content>

@@ -1,55 +1,47 @@
-var getResponse = function(data) {
-	var partidos = [
-		{
-			"id": 1,
-			"cancha_id": 1,
-			"cancha_nombre": "Oeste fútbol",
-			"dia_semana": 7,
-			"dia_mes": "11",
-			"mes": "6",
-			"anio": "2017",
-			"hora": "15",
-			"minutos": "00",
-			"jugadores_totales": 10,
-			"jugadores_actuales": 7
-		},
-		{
-			"id": 2,
-			"cancha_id": 1,
-			"cancha_nombre": "Oeste fútbol",
-			"dia_semana": 7,
-			"dia_mes": "18",
-			"mes": "6",
-			"anio": "2017",
-			"hora": "16",
-			"minutos": "00",
-			"jugadores_totales": 10,
-			"jugadores_actuales": 10
-		},
-		{
-			"id": 3,
-			"cancha_id": 1,
-			"cancha_nombre": "Oeste fútbol",
-			"dia_semana": 3,
-			"dia_mes": "14",
-			"mes": "6",
-			"anio": "2017",
-			"hora": "21",
-			"minutos": "00",
-			"jugadores_totales": 10,
-			"jugadores_actuales": 9
+var dbconnect = require("./db/dbconnect.js");
+
+var tamanios = {"1": 10, "2": 14, "3": 22}
+
+var getResponse = function(bodyRaw, callback) {
+	var body = JSON.parse(bodyRaw)
+	console.log("id jugador: " + body.data.id)
+	dbconnect.select_jugador_by_id([body.data.id], function(err, rows){
+		if(rows.length == 0) {
+			console.log("id jugador no existe")
+		} else {
+			var partidos = []
+			var nombre = rows[0].nombre
+			var apellido = rows[0].apellido
+			var handicup = rows[0].handicup
+			var edad = rows[0].edad
+			for(var i = 0; i < rows.length; i++) {
+				var row = rows[i]
+				var id = row.id_partido
+				var cancha_nombre = row.nombre_cancha
+				var fecha = row.fecha
+				var hora = row.hora
+				var jugadores_totales = tamanios[row.tamanio]
+				var partido = {
+					"id": id,
+					"cancha_nombre": cancha_nombre,
+					"fecha": fecha,
+					"hora": hora,
+					"jugadores_totales": jugadores_totales
+				}
+				partidos.push(partido)
+			}
+			return callback({
+				"user": {
+					"nombre": nombre,
+					"apellido": apellido,
+					"zona": "devoto",
+					"handicup": handicup,
+					"edad": edad
+				},
+				"partidos": partidos
+			})
 		}
-	]
-	return {
-		"user": {
-			"nombre": "Lucia",
-			"apellido": "Julia",
-			"zona": "devoto",
-			"handicup": 25,
-			"edad": 26
-		},
-		"partidos": partidos
-	}
+	})
 }
 
 module.exports = {

@@ -1,7 +1,7 @@
 var http = require("http");
 var server = http.createServer(handleRequests);
 var port = 11111;
-/*var dbconnect = require("./db/dbconnect.js");*/
+var dbconnect = require("./db/dbconnect.js");
 var controllers = require("./serverControllers.js");
 /*var queryString = require("querystring");*/
 var url = require('url');
@@ -30,12 +30,13 @@ function handleRequests(request,response) {
 	        request.on('data', function (data) {
 	            body += data;
 	            console.log("Partial body: " + body);
-	            var resp = controller.getResponse()
-				console.log('respuesta: ' + resp)
-	 	 		response.end(JSON.stringify(resp));
+	            controller.getResponse(body, function(resp) {
+	            	console.log(resp)
+	 	 			response.end(JSON.stringify(resp));
+	            })
 	        });
 	        request.on('end', function () {
-	            console.log("Body: " + body);
+	            console.log("fin");
 	        });
 			
 		}
