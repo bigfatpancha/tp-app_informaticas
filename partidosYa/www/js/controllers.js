@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['ajaxApp'])
+angular.module('app.controllers', ['ionic','ngCordova','ajaxApp'])
   
 .controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ajax', '$rootScope',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
@@ -107,9 +107,9 @@ function ($scope, $stateParams, $state, $rootScope) {
 	$scope.goTo = function(pantalla) {
 		$state
             .go(pantalla)
-            .then(function(){
+            /*.then(function(){
                 $rootScope.init()
-            });
+            });*/
 	}
 
 }])

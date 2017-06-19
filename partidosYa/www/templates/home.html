@@ -1,5 +1,5 @@
 <ion-view title="Home" id="page1" style="background-color:#000000;">
-  <ion-content padding="true" class="has-header">
+  <ion-content padding="true" class="has-header" ng-controller="homeCtrl">
     <div class="list card" id="home-card24">
       <ion-item class="item-avatar" id="home-list-item23">
         <h2>{{homeData.user.nombre}} {{homeData.user.apellido}}</h2>
@@ -12,8 +12,9 @@
       </form>
     </div>
     <ion-list id="home-list2" ng-repeat="partido in homeData.partidos">
-      <ion-item ng-click="detallePartido({{partido.id}})" id="home-list-item11"> En: {{partido.cancha_nombre}} - El  {{formatFecha(partido.fecha)}} a las {{formatHora(partido.hora)}} hs. 
-        
+      <ion-item ng-click="detallePartido({{partido.id}})" id="home-list-item11">
+        En: {{partido.cancha_nombre}}<br>
+        El  {{formatFecha(partido.fecha)}} a las {{formatHora(partido.hora)}} hs. 
       </ion-item>
     </ion-list>
     <div id="home-button-bar1" class="button-bar">
