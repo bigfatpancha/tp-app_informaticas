@@ -26,6 +26,6 @@
     <ion-list id="partido-list10" ng-repeat="amigo in partido.quienes">
       <ion-item id="partido-list-item43">{{amigo.nombre}} - Handicup: {{amigo.handicup}}</ion-item>
     </ion-list>
-    <button ng-click="buscarJugadorDeEmergencia(partido.handicup)" id="partido-button8" class="button button-positive button-block">Buscar jugador de emergencia</button>
+    <button ng-click="buscarJugadorDeEmergencia(partido.handicup)" id="partido-button8" class="button button-positive button-block" ng-show="formatTamanio(partido.donde.tamanio) > partido.quienes.length">Buscar jugador de emergencia</button>
   </ion-content>
 </ion-view>
