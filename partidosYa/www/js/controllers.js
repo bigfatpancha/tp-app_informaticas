@@ -1,17 +1,27 @@
 angular.module('app.controllers', ['ionic','ngCordova','ajaxApp'])
   
-.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 'ajax', '$rootScope', '$ionicPopup',  // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+.controller('homeCtrl', ['$scope', '$stateParams', '$state', 'DetallePartidoService', 
+'ajax', '$rootScope', '$ionicPopup', '$ionicPlatform',  
+// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope, $ionicPopup) {
+function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope, $ionicPopup, $ionicPlatform) {
 	$scope.homeData = {}
-	$rootScope.init = function() {
+	
+	$ionicPlatform.ready(function() {
+	    $scope.homeData.user = {}
+    	$scope.homeData.user.nombre = ""
+    	$scope.homeData.user.apellido = ""
+    	$scope.homeData.user.zona = ""
+    	$scope.homeData.user.handicup = 0
+    	$scope.homeData.partidos = []
 		ajax
-            .cargarHome()
-            .then(function(resp) {
-            	parse(resp);
-            })
-	}
+        	.cargarHome()
+        	.then(function(resp) {
+            	parse(resp)
+    	})
+  	});
+	
 
 	function parse(resp) {
 		if(resp.respuesta == "OK") {
@@ -103,6 +113,10 @@ function ($scope, $stateParams, $state, DetallePartidoService, ajax, $rootScope,
 
 	this.setIdPartido = function(id) {
 		this.partido.id = id;
+	}
+
+	this.getIdPartido = function() {
+		return this.partido.id
 	}
 
 	function calcularProm(jugadores) {
@@ -373,9 +387,13 @@ function ($scope, $rootScope, $stateParams, $state, DetallePartidoService, Elegi
 		var menor = handicup - 5
 		var mayor = handicup + 5
 		var content = 'Buscando jugadores con handicup entre ' + menor + ' y ' + mayor
+		var data = {
+			"handicup": handicup,
+			"idPartido": DetallePartidoService.getIdPartido()
+		}
 		$ionicLoading.show()
 		ajax
-			.buscarJugadorDeEmergencia(handicup)
+			.buscarJugadorDeEmergencia(data)
 			.then(function(resp) {
 				$ionicLoading.hide()
 				ElegirJugadoresEmergenciaService.parseJugadores(resp)
@@ -418,25 +436,36 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
 
 	$scope.mandarInvitaciones = function() {
 	 	$ionicLoading.show()
-
-		ajax
-			.mandarInvitaciones($scope.data)
-			.then(function(resp) {
-				$ionicLoading.hide()
-				$ionicPopup.alert({
-					title: 'Invitaciones enviadas correctamente',
-					buttons: [
-						{
-							text: 'volver al home',
-							type: 'button-positive',
-							onTap: function(e) {
-								$state.go('menu.home')
-							}
-						}
-					]
-				})
+		if($scope.data.selected.length == 0) {
+			$ionicLoading.hide()
+			$ionicPopup.alert({
+				title: 'No seleccionaste ningún jugador',
+				buttons: [
+					{
+						text: 'Seleecionar',
+						type: 'button-positive'
+					}
+				]
 			})
-		
+		} else {
+			ajax
+				.mandarInvitaciones($scope.data)
+				.then(function(resp) {
+					$ionicLoading.hide()
+					$ionicPopup.alert({
+						title: 'Invitaciones enviadas correctamente',
+						buttons: [
+							{
+								text: 'volver al home',
+								type: 'button-positive',
+								onTap: function(e) {
+									$state.go('menu.home')
+								}
+							}
+						]
+					})
+				})
+		}			
 	}
 
 }])
@@ -471,10 +500,10 @@ function ($scope, $stateParams, $state, $ionicPopup, ElegirJugadoresEmergenciaSe
                 return detallePartido;
             },
 
-            buscarJugadorDeEmergencia: function(handicup) {
+            buscarJugadorDeEmergencia: function(data) {
                 console.log('va a realizar el pedido del detalle')
                 this.jugadoresDeEmergencia = ajaxFunctions.realizarPedidoAjax(
-                    { method:'post', data: {"handicup": handicup}, url: $rootScope.host + 'buscarJugadorDeEmergencia' }
+                    { method:'post', data: {"data": data}, url: $rootScope.host + 'buscarJugadorDeEmergencia' }
                 );
                 return this.jugadoresDeEmergencia;
             },

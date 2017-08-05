@@ -2,8 +2,10 @@ var dbconnect = require("./db/dbconnect.js");
 
 var getResponse = function(bodyRaw, callback) {
 	var body = JSON.parse(bodyRaw)
-	console.log("handicup: " + body.data.handicup)
-	dbconnect.select_jugadores_by_handicup([body.data.handicup, body.data.handicup], function(err, rows){
+	console.log(body)
+	console.log("handicup: " + body.data.data.handicup)
+	console.log("id_partido: ", body.data.data.id_partido)
+	dbconnect.select_jugadores_by_handicup([body.data.data.handicup, body.data.data.handicup, body.data.data.id_partido], function(err, rows){
 		if(rows.length == 0) {
 			console.log("id partido no existe")
 		} else {

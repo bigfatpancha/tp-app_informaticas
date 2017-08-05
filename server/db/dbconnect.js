@@ -26,7 +26,10 @@ var select_solo_jugador_by_id_sql = 	"select * from jugadores j where j.id_jugad
 var select_cantidad_jugadores_by_id_partido_sql = 	"select pj.id_partido, count(*) cantidad from partido_jugador pj "+
 												"where pj.id_partido = ? "+
 												"group by pj.id_partido"
-var select_jugadores_by_handicup_sql = "select * from jugadores j where j.handicup > ? - 5 and j.handicup < ? + 5"
+var select_jugadores_by_handicup_sql = "select * " +
+										"from jugadores j " +
+										"where j.handicup > 48 - 5 and j.handicup < 48 + 5 " +
+										"and j.id_jugador not in (select pj.id_jugador from partido_jugador pj where pj.id_partido = 50)"
 
 function execute_statement(statement,data,callback) {
 	pool.getConnection(function(err,connection){
